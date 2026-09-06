@@ -86,6 +86,7 @@ impl Scope {
             wellen::ScopeType::VhdlPackage => "vhdl_package",
             wellen::ScopeType::GhwGeneric => "ghw_generic",
             wellen::ScopeType::VhdlArray => "vhdl_array",
+            wellen::ScopeType::SvArray => "sv_array",
             wellen::ScopeType::Unknown => "unknown",
             wellen::ScopeType::Clocking => "clocking",
             _ => "unknown", // `ScopeType` is marked as non-exhaustive

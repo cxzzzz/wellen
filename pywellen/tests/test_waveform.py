@@ -354,6 +354,15 @@ def test_scope_types():
             )
 
 
+def test_fst_sv_array_scope_type():
+    waves = Waveform(
+        path=_git_root_rel(
+            "wellen/inputs/verilator/verilator-pull-7255-t_trace_complex_structs_cc_fst.fst"
+        )
+    )
+    assert waves["top.t.unpacked_array"].scope_type == "sv_array"
+
+
 def test_stream_changes():
     wave = WaveformStream(path=_git_root_rel("wellen/inputs/verilator/swerv1.vcd"))
 
