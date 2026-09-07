@@ -1,5 +1,5 @@
 [project]
-name = "pywellen"
+name = "wavekit-pywellen"
 requires-python = ">=3.9"
 classifiers = [
   "Programming Language :: Rust",
@@ -37,4 +37,3 @@ dev = [
 
 [tool.uv]
 cache-keys = [{file = "pyproject.toml"}, {file = "Cargo.toml"}, {file = "src/*.rs"}, {file = "../wellen/src/*.rs"}, {file = "../wellen/src/**/*.rs"}]
-
