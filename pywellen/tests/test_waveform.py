@@ -220,6 +220,24 @@ def test_var_index():
     assert waves["main.WIRE_var"].index is None
 
 
+def test_waveform_time_table():
+    waves = Waveform(path=_git_root_rel("wellen/inputs/gameroy/trace_prefix.vcd"))
+    times = waves.time_table()
+
+    assert times[0] == 4
+    assert times[-1] == 39848
+    assert times == sorted(times)
+    assert waves.time_table() == times
+
+    stream = WaveformStream(path=_git_root_rel("wellen/inputs/verilator/swerv1.vcd"))
+    try:
+        stream.time_table()
+    except RuntimeError as error:
+        assert "stream" in str(error)
+    else:
+        raise AssertionError("WaveformStream.time_table() should fail")
+
+
 # Some FST tests ported from Rust (wellen/tests/fst.rs)
 def load_verilator_many_sv_datatypes():
     """Helper function to load the verilator many_sv_datatypes.fst file"""

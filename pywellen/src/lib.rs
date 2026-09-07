@@ -636,6 +636,26 @@ impl Waveform {
         }
     }
 
+    /// Return all waveform timestamps in file order.
+    fn time_table(&self) -> PyResult<Vec<wellen::Time>> {
+        if self.waves.stream_only {
+            return Err(PyRuntimeError::new_err(
+                "Cannot access time_table, since the waveform is in stream only mode.",
+            ));
+        }
+        self.waves.ensure_bulk_data()?;
+        Ok(self
+            .waves
+            .bulk
+            .read()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .time_table
+            .as_ref()
+            .clone())
+    }
+
     fn stream_changes(
         &self,
         callback: &Bound<'_, PyAny>,
@@ -748,33 +768,32 @@ impl BulkData {
 }
 
 impl SharedWaves {
+    fn ensure_bulk_data(&self) -> PyResult<()> {
+        if self.bulk.read().unwrap().is_none() {
+            let body = self.body()?;
+            let body = wellen::viewers::read_body(body, &self.hierarchy, None)
+                .map_err(|err| PyRuntimeError::new_err(err.to_string()))?;
+            *self.bulk.write().unwrap() = Some(BulkData {
+                signals: Default::default(),
+                time_table: Arc::new(body.time_table),
+                wave_source: Mutex::new(body.source),
+            });
+        }
+        Ok(())
+    }
+
     fn get_signal(&self, signal_ref: wellen::SignalRef) -> PyResult<Signal> {
         if self.stream_only {
             return Err(PyRuntimeError::new_err(
                 "Cannot access signals directly, since the waveform is in stream only mode.",
             ));
         }
-        if let Some(bulk) = self.bulk.read().unwrap().as_ref() {
-            bulk.get_signal(&self.hierarchy, self.multi_threaded, signal_ref)
-        } else {
-            // load bulk data
-            let body = self.body()?;
-            let body = wellen::viewers::read_body(body, &self.hierarchy, None)
-                .map_err(|err| PyRuntimeError::new_err(err.to_string()))?;
-
-            let bulk = BulkData {
-                signals: Default::default(),
-                time_table: Arc::new(body.time_table),
-                wave_source: Mutex::new(body.source),
-            };
-            let signal = bulk.get_signal(&self.hierarchy, self.multi_threaded, signal_ref);
-
-            // store new bulk data
-            *self.bulk.write().unwrap() = Some(bulk);
-
-            // now we can return the (maybe) signal
-            signal
-        }
+        self.ensure_bulk_data()?;
+        self.bulk.read().unwrap().as_ref().unwrap().get_signal(
+            &self.hierarchy,
+            self.multi_threaded,
+            signal_ref,
+        )
     }
 
     /// used internally to get the body continuation
