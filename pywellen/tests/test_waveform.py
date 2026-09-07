@@ -211,6 +211,15 @@ def test_hierarchy_metadata_swerv1():
     assert str(waves.timescale.unit) == "ps"
 
 
+def test_var_index():
+    waves = Waveform(
+        path=_git_root_rel("wellen/inputs/gtkwave-analyzer/vcd_extensions.vcd")
+    )
+
+    assert waves["main.REG128_INOUT"].index == (127, 0)
+    assert waves["main.WIRE_var"].index is None
+
+
 # Some FST tests ported from Rust (wellen/tests/fst.rs)
 def load_verilator_many_sv_datatypes():
     """Helper function to load the verilator many_sv_datatypes.fst file"""

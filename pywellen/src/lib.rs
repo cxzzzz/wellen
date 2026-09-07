@@ -285,6 +285,14 @@ impl Var {
         self.h()[self.id].length(&self.h())
     }
 
+    /// Inclusive `(msb, lsb)` bit index from the waveform declaration.
+    #[getter]
+    pub fn index(&self) -> Option<(i64, i64)> {
+        self.h()[self.id]
+            .index()
+            .map(|index| (index.msb(), index.lsb()))
+    }
+
     #[getter]
     pub fn is_real(&self) -> bool {
         self.h()[self.id].is_real(&self.h())
