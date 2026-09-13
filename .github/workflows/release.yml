@@ -71,6 +71,34 @@ jobs:
           name: wheels-macos-${{ matrix.target }}-py${{ matrix.python-version }}
           path: dist
 
+  pyodide:
+    runs-on: ubuntu-22.04
+    needs: ["create-release"]
+    strategy:
+      matrix:
+        pyodide-version: ["20260401"]
+    env:
+      PYODIDE_XBUILDENV_VERSION: ${{ matrix.pyodide-version }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.93.0"
+          targets: wasm32-unknown-emscripten
+      - uses: astral-sh/setup-uv@v8
+      - name: Build Pyodide wheel
+        run: ./scripts/build-pyodide.sh
+      - name: Smoke test wheel in Pyodide
+        run: ./pywellen/scripts/pyodide-smoke-test.sh
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-pyodide-${{ matrix.pyodide-version }}
+          path: target/pyodide-wheels
+
   sdist:
     # switch back to ubuntu-22.04 once this issue is resolved:
     # https://github.com/PyO3/maturin-action/issues/291
@@ -92,7 +120,7 @@ jobs:
     name: Release
     runs-on: ubuntu-22.04
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: [linux, macos, sdist]
+    needs: [linux, macos, pyodide, sdist]
     steps:
       - uses: actions/download-artifact@v8
       - name: Publish to PyPI

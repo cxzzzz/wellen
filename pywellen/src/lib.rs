@@ -488,9 +488,20 @@ struct BulkData {
 type BodyCont = wellen::viewers::ReadBodyContinuation<std::io::BufReader<std::fs::File>>;
 type StreamWave = wellen::stream::StreamingWaveform<std::io::BufReader<std::fs::File>>;
 
+/// Threading cannot work in the browser, so default to single-threaded on wasm.
+#[cfg(target_arch = "wasm32")]
+fn default_multi_threaded() -> bool {
+    false
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn default_multi_threaded() -> bool {
+    true
+}
+
 #[pyfunction]
 #[pyo3(name = "WaveformStream")]
-#[pyo3(signature = (path, multi_threaded = true, remove_scopes_with_empty_name = true))]
+#[pyo3(signature = (path, multi_threaded = default_multi_threaded(), remove_scopes_with_empty_name = true))]
 pub fn waveform_stream(
     path: String,
     multi_threaded: bool,
@@ -504,7 +515,7 @@ pub fn waveform_stream(
 /// The "egress" point from which all users can read waveforms
 impl Waveform {
     #[new]
-    #[pyo3(signature = (path, multi_threaded = true, remove_scopes_with_empty_name = true, stream_only = false))]
+    #[pyo3(signature = (path, multi_threaded = default_multi_threaded(), remove_scopes_with_empty_name = true, stream_only = false))]
     fn new(
         path: String,
         multi_threaded: bool,
