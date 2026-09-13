@@ -1,5 +1,6 @@
 [project]
 name = "wavekit-pywellen"
+version = "0.25.6.post1"
 requires-python = ">=3.9"
 classifiers = [
   "Programming Language :: Rust",
@@ -10,7 +11,6 @@ classifiers = [
 
 
 ]
-dynamic = ["version"]
 license = "BSD-3-Clause"
 description = "Fast VCD, GHW and FST wavedump reading."
 readme = "Readme.md"
