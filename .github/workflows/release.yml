@@ -88,7 +88,7 @@ jobs:
         with:
           toolchain: "1.93.0"
           targets: wasm32-unknown-emscripten
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v10.0.1
       - name: Build Pyodide wheel
         run: ./scripts/build-pyodide.sh
       - name: Smoke test wheel in Pyodide
