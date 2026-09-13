@@ -15,6 +15,8 @@ uvx --from pyodide-build pyodide xbuildenv install \
 
 rustup target add wasm32-unknown-emscripten --toolchain "${RUST_TOOLCHAIN}"
 
+mkdir -p "${OUTDIR}"
+
 cd "${REPO_ROOT}/pywellen"
 
 RUSTUP_TOOLCHAIN="${RUST_TOOLCHAIN}" \
