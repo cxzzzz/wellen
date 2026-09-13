@@ -185,7 +185,7 @@ wheels = [
 
 [[package]]
 name = "wavekit-pywellen"
-version = "0.25.6.post1"
+version = "0.25.6.post2"
 source = { editable = "." }
 
 [package.dev-dependencies]
