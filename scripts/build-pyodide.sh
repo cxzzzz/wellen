@@ -8,9 +8,8 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname -- "${SCRIPT_DIR}")"
 OUTDIR="${OUTDIR:-${REPO_ROOT}/target/pyodide-wheels}"
 
-uvx --from pyodide-build pyodide xbuildenv install \
+uvx --python 3.14 --from pyodide-build pyodide xbuildenv install \
     "${PYODIDE_XBUILDENV_VERSION}" \
-    --nightly \
     --path "${XBUILDENV_PATH}"
 
 rustup target add wasm32-unknown-emscripten --toolchain "${RUST_TOOLCHAIN}"
@@ -20,6 +19,6 @@ mkdir -p "${OUTDIR}"
 cd "${REPO_ROOT}/pywellen"
 
 RUSTUP_TOOLCHAIN="${RUST_TOOLCHAIN}" \
-uvx --from pyodide-build pyodide build \
+uvx --python 3.14 --from pyodide-build pyodide build \
     --xbuildenv-path "${XBUILDENV_PATH}" \
     --outdir "${OUTDIR}"
