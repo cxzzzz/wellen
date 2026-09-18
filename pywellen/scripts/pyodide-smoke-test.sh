@@ -6,7 +6,7 @@
 # the source tree shadows the installed package.
 set -euo pipefail
 
-PYODIDE_XBUILDENV_VERSION="${PYODIDE_XBUILDENV_VERSION:-20260401}"
+PYODIDE_XBUILDENV_VERSION="${PYODIDE_XBUILDENV_VERSION:-314.0.7}"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 WHEEL_DIR="${REPO_ROOT}/target/pyodide-wheels"

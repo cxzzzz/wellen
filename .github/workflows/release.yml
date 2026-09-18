@@ -76,14 +76,16 @@ jobs:
     needs: ["create-release"]
     strategy:
       matrix:
-        pyodide-version: ["20260401"]
+        include:
+          - pyodide-version: "314.0.7"
+            host-python: "3.14"
     env:
       PYODIDE_XBUILDENV_VERSION: ${{ matrix.pyodide-version }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: ${{ matrix.host-python }}
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: "1.93.0"
